@@ -16,23 +16,6 @@ Count = dict()
 for item in ["KEY_F1", "KEY_F2", "KEY_F3", "KEY_F4", "KEY_F5"]:
     Count[item] = 0
 
-
-mi = md.Midi()
-mi.setup()
-'''
-disp = display.Display()
-disp.setup()
-'''
-
-# Arguments in Memory
-mem = 1
-inst_mem = list()
-base_mem = list()
-vol_mem = list()
-vel_mem = list()
-memory.readMemory(inst_mem, base_mem, vol_mem, vel_mem)
-
-
 # Key-code
 getCode = dict()
 with open("keybinds.txt") as f:
@@ -46,6 +29,27 @@ with open("keyseq.txt") as f:
     for line in f:
         (keyname, note) = line.split()
         getNote[keyname] = int(note)
+
+
+
+mi = md.Midi()
+mi.setup()
+
+disp = display.Display()
+disp.setup()
+disp.setupKey()
+disp.update()
+
+
+# Arguments in Memory
+mem = 1
+inst_mem = list()
+base_mem = list()
+vol_mem = list()
+vel_mem = list()
+memory.readMemory(inst_mem, base_mem, vol_mem, vel_mem)
+
+
 
 # Get device
 devices = list()
@@ -68,9 +72,9 @@ def quitCautious():
             devices[_fd].ungrab();
         except IOError:
             print "Already ungrabbed"
-    #disp.close()
+    disp.close()
     mi.close()
-    #disp.pygame.quit()
+    disp.pygame.quit()
     sys.exit()
     return
 
@@ -93,6 +97,7 @@ for d in devices:
     _keyboard = keyboard.Keyboard(_number, _number-1, inst_mem[mem-1], vol_mem[mem-1], 30, 70, base_mem[mem-1], 0)
     keyboards[d] = _keyboard
     _number += 1
+    mem += 1s
 
 print keyboards
 
@@ -138,6 +143,7 @@ while True:
                         if kb.noteOf[keyname] >= kb.baseNote: # Check if it is one of the note
                         # Ignore it if it is not
                             kb.key_down(mi, keyname, kb.noteOf[keyname])
+                            disp.set_image(keyname)
                             if Count["KEY_F1"] > 0:
                                 recordList[-1].add_note(ctime=time.time(), channel=currentChannel, note=kb.noteOf[keyname], velocity=kb.velocity)
                 elif event.value == 0: # Keyup
@@ -146,15 +152,11 @@ while True:
                     else: # Play note
                         if keyname in kb.noteOf.keys():
                             kb.key_up(mi, keyname, kb.noteOf[keyname])
+                            disp.unset_image(keyname)
                             if Count["KEY_F1"] > 0:
                                 recordList[-1].add_note(ctime=time.time(), channel=currentChannel, note=kb.noteOf[keyname], velocity=0)
         currentChannel += 1
+    disp.update()
 
-    #disp.update()
-    #disp.check_exit()
-
-'''
-mi.turnDown()
-'''
 
 

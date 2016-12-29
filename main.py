@@ -97,7 +97,7 @@ for d in devices:
     _keyboard = keyboard.Keyboard(_number, _number-1, inst_mem[mem-1], vol_mem[mem-1], 30, 70, base_mem[mem-1], 0)
     keyboards[d] = _keyboard
     _number += 1
-    mem += 1s
+    mem += 1
 
 print keyboards
 

@@ -73,7 +73,7 @@ class Display(object):
         self.img = pygame.image.load("picture/music.png")
         print self.img.get_size()
         self.screen = pygame.display.set_mode(self.img.get_size(), pygame.RESIZABLE)
-        pygame.display.set_caption("Cautious")
+        pygame.display.set_caption("Mr.Music")
         self.img = self.img.convert()
         self.screen.blit(self.img,(0,0))
 

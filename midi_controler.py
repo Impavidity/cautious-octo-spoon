@@ -17,10 +17,10 @@ class Midi(object):
 
     def close(self):
         self.player.close()
-'''
+
     def setInstrument(self, instrument, channel):
         self.player.set_instrument(instrument, channel)
-
+'''
     def noteOff(self, note, channel):
         self.player.node_off(note, 127, channel)
 

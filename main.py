@@ -12,6 +12,12 @@ from select import select
 from midiPattern import MidiPattern
 import time
 
+def clamp(x,y,z):
+    if (x>=y and x<=z):
+        return x
+    else:
+        return y
+
 Count = dict()
 for item in ["KEY_F1", "KEY_F2", "KEY_F3", "KEY_F4", "KEY_F5"]:
     Count[item] = 0
@@ -111,6 +117,7 @@ for kb in keyboards.values():
 
 
 recordList = list()
+change = 1
 
 while True:
     rlist, wlist, xlist = select(devices, [], [])
@@ -137,6 +144,12 @@ while True:
                     elif keyname == "KEY_F2" and Count[keyname] == 0:
                         recordList[-1].stop_record(len(recordList))
                         Count["KEY_F1"] = 0
+                    elif keyname == "KEY_PAGEUP":
+                        kb.inst_num = clamp(kb.inst_num+change, 0, 127)
+                        mi.setInstrument(kb.inst_num,kb.channel)
+                    elif keyname == "KEY_PAGEDOWN":
+                        kb.inst_num = clamp(kb.inst_num-change, 0, 127)
+                        mi.setInstrument(kb.inst_num, kb.channel)
                     else: # Play note
                         kb.noteOf[keyname] = kb.baseNote + getNote.get(keyname, -100)-1
                         # default -100 as a flag
